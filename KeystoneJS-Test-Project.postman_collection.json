@@ -1,0 +1,140 @@
+{
+	"variables": [],
+	"info": {
+		"name": "KeystoneJS-Test-Project",
+		"_postman_id": "1dd2fc9f-3a66-a567-beb8-79b4a22a488d",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Auth",
+			"description": "",
+			"item": [
+				{
+					"name": "Retrieve JWT token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setGlobalVariable(\"jwt_token\", jsonData.token);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "localhost:3000/api/token-auth",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"admin@example.com\",\n\t\"password\": \"admin\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Verify JWT token",
+					"request": {
+						"url": "localhost:3000/api/token-verify",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"token\":\"{{jwt_token}}\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Car Models",
+			"description": "",
+			"item": [
+				{
+					"name": "All models",
+					"request": {
+						"url": "localhost:3000/api/v1/car-models",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{jwt_token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "FIlter Hondas models",
+					"request": {
+						"url": "localhost:3000/api/v1/car-models/?filter={\"maker\":\"587b66d97f147be57d5421f5\"}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{jwt_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"maker\": \"587b66d97f147be57d5421f5\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Premises",
+			"description": "",
+			"item": [
+				{
+					"name": "Available premises",
+					"request": {
+						"url": "localhost:3000/api/v1/premises",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "JWT {{jwt_token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
