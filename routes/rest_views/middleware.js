@@ -12,6 +12,13 @@ exports.requireJwtAuth = function(req, res, next) {
     unauthorized: 'Unauthorized - JWT',
   };
 
+  // Enable auth with current Keystone's browser session
+  if (req.user) {
+    next();
+    return;
+  }
+
+  // Validate JWT header
   if (!req.headers || !req.headers.authorization || !req.headers.authorization.startsWith("JWT ")) {
     return res.status(400).json({ error: errorMessage.badHeader })
   }
@@ -19,6 +26,7 @@ exports.requireJwtAuth = function(req, res, next) {
   const token = req.headers.authorization.substr(4);
   const secret = keystone._options.rest.jwtSecret;
   
+  // Decode and verify JWT header
   try {
     var decoded = jwt.verify(token, secret);
     keystone.list('User').model.findOne({ _id: decoded.user }).exec(function(err, user) {
@@ -30,6 +38,6 @@ exports.requireJwtAuth = function(req, res, next) {
     // err
   }
   
-  // if (req.headers.authorization === ) return next();
+  // Defaults to failure
   return res.status(403).json({ error: errorMessage.unauthorized });
 }
